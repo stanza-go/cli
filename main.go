@@ -3,27 +3,30 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/stanza-go/framework/pkg/cmd"
 )
 
-func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("stanza — project management CLI")
-		fmt.Println()
-		fmt.Println("Usage: stanza <command>")
-		fmt.Println()
-		fmt.Println("Commands:")
-		fmt.Println("  export    Export the data directory as a zip archive")
-		fmt.Println("  import    Restore from a zip archive")
-		os.Exit(0)
-	}
+var version = "dev"
 
-	switch os.Args[1] {
-	case "export":
-		fmt.Println("stanza export: not yet implemented")
-	case "import":
-		fmt.Println("stanza import: not yet implemented")
-	default:
-		fmt.Fprintf(os.Stderr, "unknown command: %s\n", os.Args[1])
+func main() {
+	app := cmd.New("stanza",
+		cmd.WithVersion(version),
+		cmd.WithDescription("Stanza CLI — project management for Stanza applications"),
+	)
+
+	app.Command("export", "Export the data directory as a zip archive", runExport,
+		cmd.StringFlag("output", "", "Output file path (default: stanza-export-{timestamp}.zip)"),
+		cmd.StringFlag("data-dir", "", "Data directory path (default: ~/.stanza/ or DATA_DIR env)"),
+	)
+
+	app.Command("import", "Import a zip archive into the data directory", runImport,
+		cmd.StringFlag("data-dir", "", "Data directory path (default: ~/.stanza/ or DATA_DIR env)"),
+		cmd.BoolFlag("force", false, "Skip confirmation prompt"),
+	)
+
+	if err := app.Run(os.Args); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 }
