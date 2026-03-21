@@ -36,6 +36,16 @@ func main() {
 		cmd.BoolFlag("list", false, "List available log files"),
 	)
 
+	app.Command("status", "Show data directory health summary", runStatus,
+		cmd.StringFlag("data-dir", "", "Data directory path (default: ~/.stanza/ or DATA_DIR env)"),
+		cmd.BoolFlag("no-color", false, "Disable colored output"),
+	)
+
+	app.Command("db", "Show database statistics and table information", runDB,
+		cmd.StringFlag("data-dir", "", "Data directory path (default: ~/.stanza/ or DATA_DIR env)"),
+		cmd.BoolFlag("no-color", false, "Disable colored output"),
+	)
+
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
