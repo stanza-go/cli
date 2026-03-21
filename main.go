@@ -25,6 +25,17 @@ func main() {
 		cmd.BoolFlag("force", false, "Skip confirmation prompt"),
 	)
 
+	app.Command("logs", "View and tail structured log files", runLogs,
+		cmd.StringFlag("data-dir", "", "Data directory path (default: ~/.stanza/ or DATA_DIR env)"),
+		cmd.IntFlag("lines", 50, "Number of lines to show"),
+		cmd.BoolFlag("follow", false, "Follow new log entries (like tail -f)"),
+		cmd.StringFlag("level", "", "Minimum log level filter (debug, info, warn, error)"),
+		cmd.StringFlag("file", "", "Log file to read (default: stanza.log)"),
+		cmd.BoolFlag("json", false, "Output raw JSON instead of pretty-printed"),
+		cmd.BoolFlag("no-color", false, "Disable colored output"),
+		cmd.BoolFlag("list", false, "List available log files"),
+	)
+
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
