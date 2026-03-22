@@ -46,6 +46,12 @@ func main() {
 		cmd.BoolFlag("no-color", false, "Disable colored output"),
 	)
 
+	app.Command("backup", "Create a consistent database backup (VACUUM INTO)", runBackup,
+		cmd.StringFlag("output", "", "Output file path (default: stanza-backup-{timestamp}.sqlite)"),
+		cmd.StringFlag("data-dir", "", "Data directory path (default: ~/.stanza/ or DATA_DIR env)"),
+		cmd.BoolFlag("compress", false, "Compress the backup with gzip"),
+	)
+
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
